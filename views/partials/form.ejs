@@ -1,0 +1,42 @@
+<div class="cls-mail_section_1">
+  <% if(response?.status === "success" && response?.action != "find"){ %>
+  <div class="alert alert-success"><strong>Success!</strong>
+    <%- response.message %>
+  </div>
+  <% } if (response?.status === "failure" && response?.action != "find"){ %>
+  <div class="alert alert-danger">
+    <strong>Error!</strong>
+    <%- response.message %>
+  </div>
+  <% } %>
+  <form action="<%- update ? '/update' : '/G2' %>" method="post">
+    <h2>Personal Information</h2>
+    <div class="form-group">
+      <input type="text" class="form-control" name="first" placeholder="First Name" pattern="[A-Za-z]{3,32}" title="Characters, Minimum three" required value="<%= result?.firstname || '' %>" <%= update ? "disabled" : ""%> />
+    </div>
+    <div class="form-group">
+      <input type="text" class="form-control" name="last" placeholder="Last Name" pattern="[A-Za-z]{3,32}" title="Characters, Minimum three" required value="<%- result?.lastname || '' %>" <%= update ? "disabled" : ""%> />
+    </div>
+    <div class="form-group">
+      <input type="text" class="form-control" name="license" placeholder="License Number" pattern="[A-Z][0-9]{4}-[0-9]{5}-[0-9]{5}" title="ANNNN-NNNNN-NNNNN" required value="<%- result?.license || '' %>" <%= update ? "disabled" : ""%> />
+    </div>
+    <div class="form-group form-group-date">
+      <input type="text" onfocus="(this.type='date')" class="form-control" name="dob" size="4" placeholder="Date Of Birth" id="id-dob-field" required value="<%- result.dob ? result.dob.toISOString()?.split('T')[0] : '' %>" <%= update ? "disabled" : ""%> />
+      <input type="number" class="form-control" name="age" size="4" min="18" placeholder="Age" id="id-age-field" required value="<%- result?.age || '' %>" <%= update ? "disabled" : ""%> />
+    </div>
+    <h2>Car Details</h2>
+    <div class="form-group form-group-date">
+      <input type="text" class="form-control" name="carmake" placeholder="Make" required value="<%- result?.car_details?.make || '' %>" />
+      <input type="text" class="form-control" name="carmodel" placeholder="Model" required value="<%- result?.car_details?.model || '' %>" />
+    </div>
+    <div class="form-group form-group-date">
+      <input type="number" class="form-control" name="caryear" placeholder="Year" min="1950" max="2023" required value="<%- result?.car_details?.year || '' %>" />
+      <input type="text" class="form-control" name="carplate" placeholder="Plate Number" required value="<%- result?.car_details?.platno || '' %>" />
+    </div>
+    <button type="submit" class="btn btn-primary read_bt">
+      <%= update ? 'Update Data' : 'Upload Data' %>
+    </button>
+    <br />
+    <br />
+  </form>
+</div>

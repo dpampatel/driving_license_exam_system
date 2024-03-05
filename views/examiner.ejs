@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- basic -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- mobile metas -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1" />
+  <!-- site metas -->
+  <title>Exams</title>
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+  <!-- bootstrap css -->
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+  <!-- style css -->
+  <link rel="stylesheet" type="text/css" href="css/style.css" />
+  <!-- Responsive-->
+  <link rel="stylesheet" href="css/responsive.css" />
+  <!-- fevicon -->
+  <link rel="icon" href="images/fevicon.png" type="image/gif" />
+  <!-- Scrollbar Custom CSS -->
+  <link rel="stylesheet" href="css/jquery.mCustomScrollbar.min.css" />
+  <!-- Tweaks for older IEs-->
+  <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" />
+  <!-- owl stylesheets -->
+  <link rel="stylesheet" href="css/owl.carousel.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen" />
+  <link rel="stylesheet" href="css/mark-your-calendar.css" />
+</head>
+
+<body>
+  <%- include('./partials/nav.ejs') %>
+
+  <div class="contact_section layout_padding cls-main">
+    <div class="cls-inner-examiner container mt-5 mb-5">
+      <% if(messages.mark_success){ %>
+      <div class="alert alert-success">
+        <strong>Success!</strong>
+        <%- messages.mark_success || "" %>
+      </div>
+      <% } if (messages.mark_failure){ %>
+      <div class="alert alert-danger">
+        <strong>Error!</strong>
+        <%- messages.mark_failure || "" %>
+      </div>
+      <% } %>
+      <!-- Examiner page content -->
+      <div class="container mt-3">
+        <h1>Appointments for Drive Test</h1>
+
+        <!-- Filter options -->
+        <form class="my-3">
+          <div class="form-group input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Filter by Test Type:</span>
+            </div>
+            <select id="testTypeFilter" class="form-control" onchange="applyFilter()">
+              <option value="all">All</option>
+              <option value="G2">G2 Test</option>
+              <option value="G">G Test</option>
+            </select>
+          </div>
+        </form>
+
+        <!-- List of appointments -->
+        <div class="row">
+          <% appointments.forEach(appointment => { %>
+          <div class="col-md-3 mb-4 cls-user <%= appointment.test_type %>">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title mb-0"><%= appointment.firstname %> <%= appointment.lastname %></h5>
+                <h5 class="card-title ml-0 "># <%= appointment.license %></h5>
+                <p class="card-text ml-0 mt-0 mb-0">Test: <%= appointment.test_type %></p>
+                <p class="card-text ml-0 mt-0 mb-0">Date: <%= appointment?.appointment?.date?.toISOString()?.split('T')[0] || "" %></p>
+                <p class="card-text ml-0 mt-0 mb-0">Time: <%= appointment?.appointment?.time || "" %></p>
+                <p class="card-text ml-0 mt-0">Previous Result: <b><%= appointment?.result === true ? "Pass" : (appointment?.result === false ? "Fail" : "Pending") %></b></p>
+                <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#detailsModal<%= appointment._id %>">Mark</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Driver details modal -->
+          <div class="modal fade" id="detailsModal<%= appointment._id %>" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel<%= appointment._id %>" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header cls-headerr">
+                  <h3 class="modal-title" id="detailsModalLabel<%= appointment._id %>">Driver Details</h3>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <h2>Name: <%= appointment.firstname %> <%= appointment.lastname %></h2>
+                  <h3>License # <%= appointment.license %></h3>
+                  <p class="m-0">Car: <%= appointment.car_details.make %> <%= appointment.car_details.model %> (<%= appointment.car_details.year %>)</p>
+                  <p class="m-0 mb-3">Test Type: <%= appointment.test_type %></p>
+                  <!-- Add comment and pass/fail inputs here -->
+                  <form action="/mark" method="POST">
+                    <input type="hidden" name="appointment_id" value="<%= appointment._id %>">
+                    <div class="form-group">
+                      <label for="comment">Comment:</label>
+                      <textarea name="comment" class="form-control" rows="3"><%= appointment?.comment || "" %></textarea>
+                    </div>
+                    <div class="form-group">
+                      <label for="result">Pass/Fail:</label>
+                      <select name="result" class="form-control" required>
+                        <option selected disabled="disabled">select</option>
+                        <option value="pass">Pass</option>
+                        <option value="fail">Fail</option>
+                      </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          <% }); %>
+        </div>
+      </div>
+    </div>
+  </div>
+  <%- include('./partials/footer.ejs') %>
+  <%- include('./partials/copyright.ejs') %>
+  <!-- Javascript files-->
+  <script>
+    // Apply filter based on test type selection
+    function applyFilter() {
+      const selectedTestType = document.getElementById('testTypeFilter').value;
+
+      const cards = document.querySelectorAll('.cls-user');
+      cards.forEach(card => {
+        if (selectedTestType === 'all' || card.classList.contains(selectedTestType)) {
+          card.style.display = 'block'; // Show the card
+        } else {
+          card.style.display = 'none'; // Hide the card
+        }
+      });
+    }
+  </script>
+  <script src="js/jquery.min.js"></script>
+  <script src="js/popper.min.js"></script>
+  <script src="js/bootstrap.bundle.min.js"></script>
+  <script src="js/jquery-3.0.0.min.js"></script>
+  <script src="js/plugin.js"></script>
+  <!-- sidebar -->
+  <script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
+  <script src="js/custom.js"></script>
+  <!-- javascript -->
+  <!-- <script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script> -->
+</body>
+
+</html>

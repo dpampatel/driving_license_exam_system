@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- basic -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- mobile metas -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1" />
+  <!-- site metas -->
+  <title>Login</title>
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+  <!-- bootstrap css -->
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+  <!-- style css -->
+  <link rel="stylesheet" type="text/css" href="css/style.css" />
+  <!-- Responsive-->
+  <link rel="stylesheet" href="css/responsive.css" />
+  <!-- fevicon -->
+  <link rel="icon" href="images/fevicon.png" type="image/gif" />
+  <!-- Scrollbar Custom CSS -->
+  <link rel="stylesheet" href="css/jquery.mCustomScrollbar.min.css" />
+  <!-- Tweaks for older IEs-->
+  <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" />
+  <!-- owl stylesheets -->
+  <link rel="stylesheet" href="css/owl.carousel.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen" />
+</head>
+
+<body>
+  <%- include('./partials/nav.ejs') %>
+
+  <!-- contact section start -->
+  <div class="contact_section layout_padding cls-main">
+
+    <div class="container-fluid">
+      <br />
+      <h2 class="text-center">Please register or login</h2>
+      <section class="row">
+        <div class="cls-mail_section_1">
+          <% if(response?.status === "success" && response?.action == "signup"){ %>
+          <div class="alert alert-success">
+            <strong>Success!</strong>
+            <%- response?.message || "" %>
+          </div>
+          <% } if (response?.status === "failure" && response?.action == "signup"){ %>
+          <div class="alert alert-danger">
+            <strong>Error!</strong>
+            <%- response?.message || "" %>
+          </div>
+          <% } %>
+          <form action="/signup" method="post" onsubmit="return g_verifySignUpPassword(arguments[0])">
+            <h2>Sign Up</h2>
+            <div class="form-group">
+              <input type="text" class="form-control" name="username" placeholder="Enter Username" pattern="[a-zA-Z0-9_-]{3,16}" title="Username must be between 3 and 16 characters long and can only contain letters, numbers, underscores, and hyphens" value="<%= result?.username || '' %>" required />
+            </div>
+            <div class="form-group">
+              <input type="password" class="form-control" name="password" placeholder="Enter Password" pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$" title="Password must be at least 8 characters long and contain at least one letter and one number" required id="pswd1" />
+            </div>
+            <div class="form-group">
+              <input type="password" class="form-control" placeholder="Confirm Password" required id="pswd2" />
+            </div>
+            <div class="form-group input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">User Type</span>
+              </div>
+              <select class="form-control" name="usertype">
+                <option value="Driver">Driver</option>
+                <option value="Examiner">Examiner</option>
+                <option value="Admin">Admin</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary read_bt">
+              Sign Up
+            </button>
+            <br />
+
+          </form>
+        </div>
+        <div class="cls-mail_section_1">
+          <% if(response?.status === "success" && response?.action == "login"){ %>
+          <div class="alert alert-success">
+            <strong>Success!</strong>
+            <%- response?.message || "" %>
+          </div>
+          <% } if (response?.status === "failure" && response?.action == "login"){ %>
+          <div class="alert alert-danger">
+            <strong>Error!</strong>
+            <%- response?.message || "" %>
+          </div>
+          <% } %>
+          <br />
+          <h2>Login</h2>
+          <form action="/login" method="post">
+            <div class="form-group">
+              <input type="text" class="form-control" name="username" placeholder="Enter Username" pattern="[a-zA-Z0-9_-]{3,16}" title="Username must be between 3 and 16 characters long and can only contain letters, numbers, underscores, and hyphens" required value="<%= result?.username || '' %>" />
+            </div>
+            <div class="form-group">
+              <input type="password" class="form-control" name="password" placeholder="Enter Password" pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$" title="Password must be at least 8 characters long and contain at least one letter and one number" required />
+            </div>
+            <button type="submit" class="btn btn-primary read_bt">Login</button>
+          </form>
+          <br />
+          <br />
+        </div>
+      </section>
+    </div>
+  </div>
+  </div>
+  <!-- contact section end -->
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          Password mismatch
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <%- include('./partials/footer.ejs') %>
+  <%- include('./partials/copyright.ejs') %>
+  <!-- Javascript files-->
+  <script src="js/jquery.min.js"></script>
+  <script src="js/popper.min.js"></script>
+  <script src="js/bootstrap.bundle.min.js"></script>
+  <script src="js/jquery-3.0.0.min.js"></script>
+  <script src="js/plugin.js"></script>
+  <!-- sidebar -->
+  <script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
+  <script src="js/custom.js"></script>
+  <!-- javascript -->
+  <!-- <script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script> -->
+</body>
+
+</html>

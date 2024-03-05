@@ -1,0 +1,99 @@
+<% if(result.availability) { %>
+<div class="cls-mail_section_1">
+
+  <form action="/book" method="post">
+    <h2>Appointment</h2>
+    <% if(result.availability.length == 0){ %>
+    <h3>No slots available</h3>
+    <% } else { %>
+    <div class="form-group input-group">
+      <div class="input-group-prepend">
+        <span class="input-group-text">Date</span>
+      </div>
+      <select id="app-date" class="form-control" name="appointment_date" required onchange="g_onChangeAppointmentDate(event)">
+        <option disabled selected value> YYYY-MM-DD </option>
+        <% result.unique = result.availability.map((obj)=>obj?.date?.toISOString()?.split('T')[0] || '' ).filter((value, index, array) => array.indexOf(value) == index)%>
+        <% for(let l_date = 0; l_date < result.unique.length; l_date++) { %>
+        <option value=<%- result.unique[l_date] %>><%- result.unique[l_date] %></option>
+        <% } %>
+      </select>
+    </div>
+
+    <div class="form-group input-group">
+      <div class="input-group-prepend">
+        <span class="input-group-text">Time</span>
+      </div>
+      <select id="app-time" class="form-control" name="appointment_time" required onchange="g_onChangeAppointmentTime(event)" <% result?.appointment ? "readonly" : "" %> value=<%= result?.appointment?.time || '' %>>
+        <option disabled selected value> HH:MM </option>
+      </select>
+    </div>
+
+    <div class="form-group input-group">
+      <div class="input-group-prepend">
+        <span class="input-group-text">Appointment #</span>
+      </div>
+      <input id="app-id" type="text" class="form-control" name="app_id" readonly required />
+    </div>
+    <div class="form-group input-group">
+      <div class="input-group-prepend">
+        <span class="input-group-text">Test Type</span>
+      </div>
+      <input type="text" class="form-control" name="test_type" readonly value=<%= test_type%> />
+    </div>
+
+    <button type="submit" class="btn btn-primary read_bt">
+      Book
+    </button>
+    <br />
+    <% } %>
+  </form>
+</div>
+<% } %>
+<%if(result.appointment) {%>
+
+<div class="cls-mail_section_1">
+  <h2>Appointment booked</h2>
+  <div class="form-group input-group">
+    <div class="input-group-prepend">
+      <span class="input-group-text">Date</span>
+    </div>
+    <input type="text" class="form-control" readonly value=<%= result?.appointment?.date?.toISOString()?.split('T')[0] || '' %> />
+  </div>
+
+  <div class="form-group input-group">
+    <div class="input-group-prepend">
+      <span class="input-group-text">Time</span>
+    </div>
+    <input type="text" class="form-control" readonly value=<%= result?.appointment?.time || '' %> />
+  </div>
+  <div class="form-group input-group">
+    <div class="input-group-prepend">
+      <span class="input-group-text">Appointment #</span>
+    </div>
+    <input type="text" class="form-control" readonly value=<%= result?.appointment_id || '' %> />
+  </div>
+  <div class="form-group input-group">
+    <div class="input-group-prepend">
+      <span class="input-group-text">Test Type</span>
+    </div>
+    <input type="text" class="form-control" readonly value=<%= result?.test_type || test_type %> />
+  </div>
+</div>
+
+<div class="cls-mail_section_1">
+  <h2>Test Result</h2>
+  <div class="form-group input-group">
+    <div class="input-group-prepend">
+      <span class="input-group-text">Comment</span>
+    </div>
+    <textarea name="comment" class="form-control" rows="3" readonly><%- result?.comment || 'Pending' %></textarea>
+  </div>
+
+  <div class="form-group input-group">
+    <div class="input-group-prepend">
+      <span class="input-group-text">Result</span>
+    </div>
+    <input type="text" class="form-control" readonly value="<%- result?.result === true ? "Pass" : result?.result === false ? "Fail" : "Pending" %>" />
+  </div>
+</div>
+<% } %>

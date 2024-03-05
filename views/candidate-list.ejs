@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- basic -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- mobile metas -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1" />
+  <!-- site metas -->
+  <title>Exams</title>
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+  <!-- bootstrap css -->
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+  <!-- style css -->
+  <link rel="stylesheet" type="text/css" href="css/style.css" />
+  <!-- Responsive-->
+  <link rel="stylesheet" href="css/responsive.css" />
+  <!-- fevicon -->
+  <link rel="icon" href="images/fevicon.png" type="image/gif" />
+  <!-- Scrollbar Custom CSS -->
+  <link rel="stylesheet" href="css/jquery.mCustomScrollbar.min.css" />
+  <!-- Tweaks for older IEs-->
+  <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" />
+  <!-- owl stylesheets -->
+  <link rel="stylesheet" href="css/owl.carousel.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen" />
+  <link rel="stylesheet" href="css/mark-your-calendar.css" />
+</head>
+
+<body>
+  <%- include('./partials/nav.ejs') %>
+
+  <div class="contact_section layout_padding cls-main cls-candidate">
+    <div class="cls-inner">
+      <% if(messages.list_success){ %>
+      <div class="alert alert-success">
+        <strong>Success!</strong>
+        <%- messages.list_success || "" %>
+      </div>
+      <% } if (messages.list_failure){ %>
+      <div class="alert alert-danger">
+        <strong>Error!</strong>
+        <%- messages.list_failure || "" %>
+      </div>
+      <% } %>
+      <!-- Filter options -->
+      <form class="my-3">
+        <div class="form-group input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Filter by Result:</span>
+          </div>
+          <select id="resultFilter" class="form-control" onchange="applyFilter()">
+            <option value="all">All</option>
+            <option value="pass">Pass</option>
+            <option value="fail">Fail</option>
+          </select>
+        </div>
+      </form>
+
+      <!-- List of candidates -->
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Comments</th>
+            <th>Result</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% candidates.forEach(candidate => { %>
+          <tr class="<%= candidate.result === true ? "pass" : "fail"%>">
+            <td><%= candidate.firstname %> <%= candidate.lastname %></td>
+            <td><%= candidate.comment %></td>
+            <% if(candidate.result === true) { %>
+            <td>Pass</td>
+            <td><a class="cls-issue" href="#">Issue License</a></td>
+            <% } else { %>
+            <td>Fail</td>
+            <td></td>
+            <% } %>
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  </div>
+  <%- include('./partials/footer.ejs') %>
+  <%- include('./partials/copyright.ejs') %>
+  <!-- Javascript files-->
+  <script>
+    // Apply filter based on result selection
+    function applyFilter() {
+      const selectedResult = document.getElementById('resultFilter').value;
+
+      const rows = document.querySelectorAll('tbody tr');
+      rows.forEach(row => {
+        if (selectedResult === 'all' || row.classList.contains(selectedResult)) {
+          row.style.display = 'table-row'; // Show the row
+        } else {
+          row.style.display = 'none'; // Hide the row
+        }
+      });
+    }
+  </script>
+  <script src="js/jquery.min.js"></script>
+  <script src="js/popper.min.js"></script>
+  <script src="js/bootstrap.bundle.min.js"></script>
+  <script src="js/jquery-3.0.0.min.js"></script>
+  <script src="js/plugin.js"></script>
+  <!-- sidebar -->
+  <script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
+  <script src="js/custom.js"></script>
+  <!-- javascript -->
+  <!-- <script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script> -->
+</body>
+
+</html>
